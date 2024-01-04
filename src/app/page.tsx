@@ -1,95 +1,69 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+'use client'; //habilitar as funções do REACT
 
+
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+
+//declaração do componente
 export default function Home() {
+
+  const [projetos, setProjetos] = useState([]);
+  //função do REACT executada sempre que a página abre
+  useEffect(() => {
+
+    //fazendo uma requisição GET para consulta de projetos na API
+    axios.get('http://localhost:8081/api/projeto')
+      .then((response) => { //capturar o retorno de sucesso da API
+        //armazenar o valor obtido da API na variável do useState
+        setProjetos(response.data);
+      })
+
+      .catch((e) => { //capturar o retorno de erro da API
+        console.log(e);
+      });
+  });
+
+
+  //Exibir o código HTML do componente
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <div>
+      <h1>Sistema de Controle de Projetos</h1>
+      <p>Listagem de projetos cadastrados:</p>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+      <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome do projeto</th>
+          <th>Escopo</th>
+          <th>Data de Entrega</th>
+          <th>Operações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          //percorrendo a lista de projetos
+          projetos.map((item: any) => (
+            <tr>
+              <td>{item.id}</td>
+              <td>{item.nome}</td>
+              <td>{item.escopo}</td>
+              <td>{item.dataEntrega}</td>
+              <td></td>
+            </tr>
+          ))
+        }
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colSpan={5}>
+            Quantidade de projetos: {projetos.length}
+          </td>
+        </tr>
+      </tfoot>
+    </table>
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </div>
   )
 }
